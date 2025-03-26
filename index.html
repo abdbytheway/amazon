@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amazon Search URL Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            margin: 20px;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            max-width: 500px;
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: none;
+        }
+        button {
+            margin: 10px 0;
+            padding: 10px 15px;
+            background: #ff9900;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #e68a00;
+        }
+        .copy-container {
+            margin-top: 10px;
+        }
+        #copyText {
+            width: 100%;
+            height: 150px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Amazon Search URL Generator</h2>
+        <p>Enter keywords or ASINs (one per line) to generate Amazon search URLs:</p>
+        <textarea id="keywords" placeholder="Enter keywords or ASINs..."></textarea><br>
+        <button onclick="generateUrls()">Generate Search URLs</button>
+        <div class="copy-container">
+            <textarea id="copyText" readonly></textarea><br>
+            <button onclick="copyToClipboard()">Copy URLs</button>
+        </div>
+    </div>
+    
+    <script>
+        function generateUrls() {
+            const entries = document.getElementById('keywords').value.split('\n');
+            const copyText = document.getElementById('copyText');
+            copyText.value = "";
+            let urlList = [];
+            
+            entries.forEach(entry => {
+                entry = entry.trim();
+                if (entry) {
+                    let searchUrl;
+                    if (/^B0[0-9A-Z]{8}$/i.test(entry)) {
+                        // ASIN format
+                        searchUrl = `https://www.amazon.com/dp/${entry}?th=1`;
+                    } else {
+                        // Keyword search format
+                        searchUrl = `https://www.amazon.com/s?k=${entry.replace(/\s+/g, "+")}`;
+                    }
+                    urlList.push(searchUrl);
+                }
+            });
+            
+            copyText.value = urlList.join('\n');
+        }
+        
+        function copyToClipboard() {
+            const copyText = document.getElementById('copyText');
+            copyText.select();
+            document.execCommand("copy");
+            alert("URLs copied to clipboard!");
+        }
+    </script>
+</body>
+</html>
